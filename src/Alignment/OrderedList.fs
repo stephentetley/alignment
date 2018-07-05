@@ -65,4 +65,29 @@ let differenceR (left:OrderedList<'key,'a>) (right:OrderedList<'key,'b>) : Order
         
     work [] left.ListBody right.ListBody
 
+/// Intersection 'degenerates' to a list because the projection function for 
+/// the pair ('a * 'b) cannot be derived automatically.
+let intersection (left:OrderedList<'key,'a>) (right:OrderedList<'key,'b>) : List<'a * 'b> = 
+    let projectL = left.ProjectKey
+    let projectR = right.ProjectKey
+    
+    let rec work ac xs ys = 
+        match (xs,ys) with
+        | _, [] -> List.rev ac
+        | [], _ -> List.rev ac
+        | (x::xs1, y::ys1) -> 
+            match compare (projectL x) (projectR y) with
+            | i when i = 0 -> 
+                // item in xs and ys, accumulate
+                work ((x,y)::ac) xs1 ys1
+            | i when i < 0 -> 
+                // ys ahead of xs, move to next of xs
+                work ac xs1 ys
+            | i when i > 0 -> 
+                // xs ahead of ys, so head of ys not in xs (accumulate), still consider all of xs
+                work ac xs ys1
+            | i -> failwithf "union - Weird (impossible) pattern failure: %i" i
+        
+    work [] left.ListBody right.ListBody
+
 

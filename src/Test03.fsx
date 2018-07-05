@@ -14,7 +14,7 @@ let uncompass (point:Compass) : string =
     | EAST -> "east"
     | WEST -> "west"
 
-let l1 = ["north";"south";"east";"west"]
+let l1 = ["north";"south";"east"]
 let l2 = [WEST;SOUTH;WEST]
 
 
@@ -23,5 +23,5 @@ let al2 = AlignedList.ofList uncompass l2
 
 let test01 () = differenceL al1 al2
 let test02 () = differenceR al1 al2
-
+let test03 () = intersection al1 al2
 

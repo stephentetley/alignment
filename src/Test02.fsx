@@ -15,5 +15,7 @@ let ol2 = OrderedList.ofList (int) l2
 
 let test01 () = differenceL ol1 ol2
 let test02 () = differenceR ol1 ol2
+let test03 () = intersection ol1 ol2
+
 
 

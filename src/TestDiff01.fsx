@@ -5,9 +5,9 @@ open FSharp.ExcelProvider
 open System.Text.RegularExpressions
 
 #load "Alignment/Common.fs"
-#load @"Alignment/Set.fs"
+#load @"Alignment/OrderedList.fs"
 open Alignment.Common
-open Alignment.Set
+open Alignment.OrderedList
 
 
 type UploadTable = 
@@ -19,32 +19,22 @@ type UploadTable =
 /// type abbreviations.
 type UploadRow = UploadTable.Row
 
-let normalize (str:string) : string = str.Replace('_', ' ')
 
-/// Note - it is a lot of work to get an ExcelFile<..>.Row to implement
-/// System.IComparable, so we can put it in a Set<>.
-[<CustomEquality; CustomComparison>]
-[<Struct>]
-type Upload = 
-    Upload of UploadRow
-        member v.unwrap = match v with | Upload x -> x
-        override x.Equals(yobj) =
-            match yobj with
-            | :? Upload as y -> normalize x.unwrap.Title = normalize y.unwrap.Title
-            | _ -> false
+/// "ALBERT_WTW Erskine Battery Asset Replacement Install Sheet"
+let normalizeTitle (str:string) : string = 
+    let rest = str.IndexOf(" Erskine") - 1
+    if rest > 0 then 
+        // printfn "normalizeTitle: '%s'" (str.[0 .. rest].Replace('_', ' '))
+        str.[0 .. rest].Replace('_', ' ')
+    else
+        str
 
-        override x.GetHashCode() = hash x.unwrap.Title
+let normalizeDirName (str:string) : string = 
+    str.Trim().Replace('_', ' ')
+    
 
-        interface System.IComparable with
-            member x.CompareTo(yobj) = 
-                match yobj with
-                | :? Upload as y -> 
-                    compare (normalize x.unwrap.Title) (normalize y.unwrap.Title)
-                | _ -> invalidArg "yobj" "Cannot compare values of different types"
-
-
-
-        
+let uploadKey (row:UploadRow) : string = normalizeTitle <| row.Title
+let directoryKey (name:string) : string = normalizeDirName name
 
 
 
@@ -71,35 +61,20 @@ let getDirectoryNames (listingPath:string) : string list =
     let text:string list = System.IO.File.ReadAllLines(listingPath) |> Array.toList
     text |> List.map getDirectoryName |> List.choose id
 
-let test01 ()  = 
-    List.iter (printfn "%s") 
-        <| getDirectoryNames @"G:\work\Projects\rtu\Erskines\alignment\dir.txt"
-    List.iter (printfn "%A") 
-        <| getSiteRows ()
 
-
-let getUploads () : Set<Upload> = 
+let getUploads () : OrderedList<string,UploadRow> = 
     getSiteRows () 
-        |> List.map (fun x -> Upload(x))
-        |> Set.ofList 
+        |> OrderedList.ofList uploadKey
 
-let getDirectories () : Set<string> = 
+let getDirectories () : OrderedList<string,string> = 
     getDirectoryNames @"G:\work\Projects\rtu\Erskines\alignment\dir.txt"
-        |> Set.ofList
+        |> OrderedList.ofList directoryKey
 
 
-let testDiff01 () = 
-    let compH : CompareH<string, Upload>  = 
-        fun nameBad upload -> 
-            let name = normalize nameBad
-            let n = name.Length - 1
-            let prefix = normalize <| upload.unwrap.Title.[0..n]
-            printfn "compare: name'%s'; prefix='%s'" name prefix
-            compare name prefix
-
-            
-    Set.iter (printfn "%s") 
-        <| differenceL compH (getDirectories ()) (getUploads ())
+let test01 () = 
+    differenceL (getDirectories ()) (getUploads ())
+        |> toList
+        |> List.iter (printfn "%s") 
 
 
 

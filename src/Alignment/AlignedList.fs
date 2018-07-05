@@ -48,3 +48,20 @@ let differenceR (left:AlignedList<'key,'a>) (right:AlignedList<'key,'b>) : Align
                 
     work [] right.ListBody
 
+/// Intersection 'degenerates' to a list because the projection function for 
+/// the pair ('a * 'b) cannot be derived automatically.
+let intersection (left:AlignedList<'key,'a>) (right:AlignedList<'key,'b>) : List<'a * 'b> = 
+    let projectL = left.ProjectKey
+    let projectR = right.ProjectKey
+    let dictRight = Map.ofList <| List.map (fun a -> (projectR a, a)) right.ListBody
+
+    let rec work ac xs = 
+        match xs with
+        | [] -> List.rev ac
+        | (x::xs1) -> 
+            match Map.tryFind (projectL x) dictRight with 
+            | Some y -> work ((x,y)::ac) xs1 
+            | None -> work ac xs1
+                
+    work [] left.ListBody
+
