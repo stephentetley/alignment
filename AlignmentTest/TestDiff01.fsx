@@ -4,8 +4,8 @@ open FSharp.ExcelProvider
 
 open System.Text.RegularExpressions
 
-#load "Alignment/Common.fs"
-#load @"Alignment/OrderedList.fs"
+#load "..\Alignment\Alignment\Common.fs"
+#load "..\Alignment\Alignment\OrderedList.fs"
 open Alignment.Common
 open Alignment.OrderedList
 

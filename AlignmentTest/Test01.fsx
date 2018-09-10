@@ -2,10 +2,10 @@
 open System.Text.RegularExpressions
 
 
-#load @"Alignment/Levenshtein.fs"
-#load @"Alignment/Set.fs"
+#load "..\Alignment\Alignment\Levenshtein.fs"
+// #load @"Alignment/Set.fs"
 open Alignment.Levenshtein
-open Alignment.Set
+// open Alignment.Set
 
 
 
@@ -34,7 +34,7 @@ let str1 : string =
 
         
 
-let compareH : CompareH<int,string> = 
-    fun i str -> compare i (int str)
+//let compareH : CompareH<int,string> = 
+//    fun i str -> compare i (int str)
 
 

@@ -5,8 +5,8 @@ open FSharp.ExcelProvider
 open System.Text.RegularExpressions
 
 
-#load "Alignment\AlignedList.fs"
-#load "Alignment\Extra\ExcelProviderHelper.fs"
+#load "..\Alignment\Alignment\AlignedList.fs"
+#load "..\Alignment\Alignment\Extra\ExcelProviderHelper.fs"
 open Alignment.AlignedList
 open Alignment.Extra.ExcelProviderHelper
 
@@ -19,11 +19,6 @@ type WorkTable =
 /// type abbreviations.
 type WorkRow = WorkTable.Row
 
-
-
-//let workTableDict : ExcelProviderHelperDict<WorkTable, WorkRow> = 
-//    { GetRows     = fun sheet -> sheet.Data 
-//      NotNullProc = fun row -> match row.GetValue(0) with | null -> false | _ -> true }
 
 
 let getWorkRows () : WorkRow list = 

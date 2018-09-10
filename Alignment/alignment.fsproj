@@ -57,11 +57,6 @@
     <Compile Include="Alignment\OrderedList.fs" />
     <Compile Include="Alignment\AlignedList.fs" />
     <Compile Include="Alignment\Extra\ExcelProviderHelper.fs" />
-    <None Include="TestDiff01.fsx" />
-    <None Include="TestDiff02.fsx" />
-    <None Include="Test01.fsx" />
-    <None Include="Test02.fsx" />
-    <None Include="Test03.fsx" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

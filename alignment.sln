@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "alignment", "src\alignment.fsproj", "{340A0EDE-E4A1-42CA-9D37-05926BB67E5E}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "alignment", "Alignment\alignment.fsproj", "{340A0EDE-E4A1-42CA-9D37-05926BB67E5E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "alignment-test", "AlignmentTest\alignment-test.fsproj", "{0A616A2B-A494-4552-A172-38478D8C3D77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{340A0EDE-E4A1-42CA-9D37-05926BB67E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{340A0EDE-E4A1-42CA-9D37-05926BB67E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{340A0EDE-E4A1-42CA-9D37-05926BB67E5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A616A2B-A494-4552-A172-38478D8C3D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A616A2B-A494-4552-A172-38478D8C3D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A616A2B-A494-4552-A172-38478D8C3D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A616A2B-A494-4552-A172-38478D8C3D77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
