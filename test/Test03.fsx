@@ -1,7 +1,7 @@
 ﻿
 open System.Text.RegularExpressions
 
-#load "..\Alignment\Alignment\AlignedList.fs"
+#load "..\src\Alignment\AlignedList.fs"
 open Alignment.AlignedList
 
 

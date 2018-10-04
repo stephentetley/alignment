@@ -2,7 +2,7 @@
 open System.Text.RegularExpressions
 
 
-#load "..\Alignment\Alignment\Levenshtein.fs"
+#load "..\src\Alignment\Levenshtein.fs"
 // #load @"Alignment/Set.fs"
 open Alignment.Levenshtein
 // open Alignment.Set
