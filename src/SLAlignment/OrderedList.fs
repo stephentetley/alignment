@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Stephen Tetley 2018
 // License: BSD 3 Clause
 
-module Alignment.OrderedList
+module SLAlignment.OrderedList
 
 open System
 

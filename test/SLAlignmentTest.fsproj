@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Test01.fsx" />
+    <None Include="Test02.fsx" />
+    <None Include="Test03.fsx" />
+    <None Include="TestDiff01.fsx" />
+    <None Include="TestDiff02.fsx" />
+  </ItemGroup>
+
+</Project>

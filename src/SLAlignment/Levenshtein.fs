@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Stephen Tetley 2018
 // License: BSD 3 Clause
 
-module Alignment.Levenshtein
+module SLAlignment.Levenshtein
 
 
 let private ArraySwap (a:int[]) (b:int[]) : unit = 

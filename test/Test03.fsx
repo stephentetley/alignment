@@ -1,8 +1,11 @@
-﻿
-open System.Text.RegularExpressions
+﻿// Copyright (c) Stephen Tetley 2019
+// License: BSD 3 Clause
 
-#load "..\src\Alignment\AlignedList.fs"
-open Alignment.AlignedList
+#r "netstandard"
+
+
+#load "..\src\SLAlignment\AlignedList.fs"
+open SLAlignment.AlignedList
 
 
 type Compass = NORTH | SOUTH | EAST | WEST

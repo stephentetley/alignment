@@ -1,10 +1,13 @@
 ﻿// Copyright (c) Stephen Tetley 2018
 // License: BSD 3 Clause
 
-#I @"..\packages\ExcelProvider.1.0.1\lib\net45"
+#r "netstandard"
+
+
+#I @"C:\Users\stephen\.nuget\packages\ExcelProvider\1.0.1\lib\netstandard2.0"
 #r "ExcelProvider.Runtime.dll"
 
-#I @"..\packages\ExcelProvider.1.0.1\typeproviders\fsharp41\net45"
+#I @"C:\Users\stephen\.nuget\packages\ExcelProvider\1.0.1\typeproviders\fsharp41\netstandard2.0"
 #r "ExcelDataReader.DataSet.dll"
 #r "ExcelDataReader.dll"
 #r "ExcelProvider.DesignTime.dll"
@@ -12,10 +15,10 @@ open FSharp.Interop.Excel
 
 open System.Text.RegularExpressions
 
-#load "..\src\Alignment\Common.fs"
-#load "..\src\Alignment\OrderedList.fs"
-open Alignment.Common
-open Alignment.OrderedList
+#load "..\src\SLAlignment\Common.fs"
+#load "..\src\SLAlignment\OrderedList.fs"
+open SLAlignment.Common
+open SLAlignment.OrderedList
 
 
 type UploadTable = 

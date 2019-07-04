@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Stephen Tetley 2018
 // License: BSD 3 Clause
 
-module Alignment.Common
+module SLAlignment.Common
 
 /// The Excel Type Provider seems to read a trailing null row.
 /// This dictionary and procedure provide a skeleton to get round this.

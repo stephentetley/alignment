@@ -1,11 +1,13 @@
-﻿
+﻿// Copyright (c) Stephen Tetley 2019
+// License: BSD 3 Clause
+
+#r "netstandard"
+
 open System.Text.RegularExpressions
 
 
-#load "..\src\Alignment\Levenshtein.fs"
-// #load @"Alignment/Set.fs"
-open Alignment.Levenshtein
-// open Alignment.Set
+#load "..\src\SLAlignment\Levenshtein.fs"
+open SLAlignment.Levenshtein
 
 
 

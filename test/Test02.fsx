@@ -1,8 +1,10 @@
-﻿
-open System.Text.RegularExpressions
+﻿// Copyright (c) Stephen Tetley 2019
+// License: BSD 3 Clause
 
-#load "..\src\Alignment\OrderedList.fs"
-open Alignment.OrderedList
+#r "netstandard"
+
+#load "..\src\SLAlignment\OrderedList.fs"
+open SLAlignment.OrderedList
 
 
         

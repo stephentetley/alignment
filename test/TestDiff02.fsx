@@ -1,10 +1,14 @@
 ﻿// Copyright (c) Stephen Tetley 2018
 // License: BSD 3 Clause
 
-#I @"..\packages\ExcelProvider.1.0.1\lib\net45"
+#r "netstandard"
+
+open System.IO
+
+#I @"C:\Users\stephen\.nuget\packages\ExcelProvider\1.0.1\lib\netstandard2.0"
 #r "ExcelProvider.Runtime.dll"
 
-#I @"..\packages\ExcelProvider.1.0.1\typeproviders\fsharp41\net45"
+#I @"C:\Users\stephen\.nuget\packages\ExcelProvider\1.0.1\typeproviders\fsharp41\netstandard2.0"
 #r "ExcelDataReader.DataSet.dll"
 #r "ExcelDataReader.dll"
 #r "ExcelProvider.DesignTime.dll"
@@ -13,10 +17,10 @@ open FSharp.Interop.Excel
 open System.Text.RegularExpressions
 
 
-#load "..\src\Alignment\AlignedList.fs"
-#load "..\src\Alignment\Extra\ExcelProviderHelper.fs"
-open Alignment.AlignedList
-open Alignment.Extra.ExcelProviderHelper
+#load "..\src\SLAlignment\AlignedList.fs"
+#load "..\src\SLAlignment\Extra\ExcelProviderHelper.fs"
+open SLAlignment.AlignedList
+open SLAlignment.Extra.ExcelProviderHelper
 
 type WorkTable = 
     ExcelFile< @"G:\work\Projects\events2\EDM2 Site-List SK.xlsx",

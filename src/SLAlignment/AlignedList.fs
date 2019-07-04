@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Stephen Tetley 2018
 // License: BSD 3 Clause
 
-module Alignment.AlignedList
+module SLAlignment.AlignedList
 
 [<StructuredFormatDisplay("AlignedList = {ListBody}")>]
 type AlignedList<'Key,'a when 'Key : comparison> = 

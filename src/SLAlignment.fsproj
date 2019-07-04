@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="SLAlignment\Common.fs" />
+    <Compile Include="SLAlignment\Levenshtein.fs" />
+    <Compile Include="SLAlignment\OrderedList.fs" />
+    <Compile Include="SLAlignment\AlignedList.fs" />
+    <Compile Include="SLAlignment\Extra\ExcelProviderHelper.fs" />
+  </ItemGroup>
+
+</Project>
