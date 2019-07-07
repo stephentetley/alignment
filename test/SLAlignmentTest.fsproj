@@ -10,6 +10,8 @@
     <None Include="Test03.fsx" />
     <None Include="TestDiff01.fsx" />
     <None Include="TestDiff02.fsx" />
+    <None Include="Temp01.fsx" />
+    <None Include="Zipper1.fsx" />
   </ItemGroup>
 
 </Project>
