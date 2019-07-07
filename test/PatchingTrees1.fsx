@@ -13,36 +13,50 @@ type Diff<'a> =
     | Del of 'a * arity : int
     | Cpy of 'a * arity : int
    
-let insert (x:'a) (arity:int) (trees : Tree<'a> list) : (Tree<'a> list) option = 
+let insertCps (x:'a) 
+              (arity:int) 
+              (trees : Tree<'a> list) 
+              (fk : unit -> (Tree<'a> list) option)
+              (sk : Tree<'a> list -> (Tree<'a> list) option) : (Tree<'a> list) option = 
     try 
         let (ys, yss) = List.splitAt arity trees
-        Some (Node(x,ys) :: yss)
+        sk (Node(x,ys) :: yss)
     with
-    | _ -> None
+    | _ -> fk ()
 
     
-let delete (x:'a) (arity:int) (trees : Tree<'a> list) : (Tree<'a> list) option = 
+let deleteCps (x:'a) 
+              (arity:int) 
+              (trees : Tree<'a> list)
+              (fk : unit -> (Tree<'a> list) option)
+              (sk : Tree<'a> list -> (Tree<'a> list) option) : (Tree<'a> list) option = 
     match trees with
-    | [] -> None
+    | [] -> fk ()
     | Node(y, ys) :: yss -> 
-        if x = y && arity = ys.Length then Some (ys @ yss) else None
+        if x = y && arity = ys.Length then sk (ys @ yss) else fk ()
 
 
 let patch (patchSteps : Diff<'a> list) (source : Tree<'a> list) : (Tree<'a> list) option = 
     let rec work ps xs fk sk = 
         match ps, xs with
+        | Ins(x, sz) :: ds, ys -> 
+            work ds ys fk (fun ac ->
+            insertCps x sz ac fk sk)
+
+        | Del(x, sz) :: ds, ys -> 
+            deleteCps x sz ys fk (fun ac ->
+            work ds ac fk sk)
+
+        | Cpy(x, sz) :: ds, ys ->
+            deleteCps x sz ys fk (fun ac1 ->
+            work ds ac1 fk (fun ac2 -> 
+            insertCps x sz ac2 fk sk))
+
         | [], [] -> sk []
-        | _, [] -> fk () 
-        | [], _ -> fk () 
-        | Ins(x,sz) :: ds, ys -> 
-            work ds ys fk (fun ac ->
-            sk (x :: ac))
-        | Del(x,sz) :: ds, _ :: ys -> 
-            work ds ys fk sk
-        | Cpy(x,sz) :: ds, y :: ys ->
-            work ds ys fk (fun ac ->
-                sk (y :: ac))
+
+        | [], _ -> fk ()
     work patchSteps source (fun _ -> None) (fun xs -> Some xs)
+
 
 //let demo01 () = 
 //    patch [Cpy(1);Cpy(2);Ins(3);Cpy(4)] [1;2;4]
@@ -82,5 +96,13 @@ let diff (list1 : Tree<'a> list) (list2 : Tree<'a> list) : Diff<'a> list =
 
 let demo02 () = diff [ Node(1, [Node(2,[]); Node(3,[]); Node(4,[]); Node(5,[])]) ] 
                      [ Node(1, [Node(3,[]); Node(4,[]) ; Node(6,[])]) ]
+
+
+let demo03 () = 
+    let tree1 = Node(1,[ Node(2,[]); Node(3,[])] )
+    let tree2 = Node(1,[ Node(2,[ Node(4,[]) ]); Node(3,[])] )
+    let diffs = diff [tree1] [tree2]
+    List.iter (printfn "%O") diffs
+    patch diffs [tree1]
 
 
