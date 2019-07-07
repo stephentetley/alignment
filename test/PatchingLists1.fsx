@@ -9,14 +9,19 @@ type Diff<'a> =
     | Del of 'a
     | Cpy of 'a
    
-let insert (x:'a)  (items : 'a list) : ('a list) option = Some (x :: items)
+let insertCps (x:'a)  (items : 'a list) 
+                (_ : unit -> ('a list) option) 
+                (sk : 'a list -> ('a list) option) : ('a list) option = 
+    sk (x :: items)
     
 
     
-let delete (x:'a) (items: 'a list) : ('a list) option = 
+let deleteCps (x:'a)  (items : 'a list) 
+                (fk : unit -> ('a list) option) 
+                (sk : 'a list -> ('a list) option) : ('a list) option = 
     match items with
-    | [] -> None
-    | y :: ys -> if x = y then Some ys else None
+    | [] -> fk ()
+    | y :: ys -> if x = y then sk ys else fk ()
 
 
 let patch (patchSteps : Diff<'a> list) (source : 'a list) : ('a list) option = 
@@ -24,21 +29,22 @@ let patch (patchSteps : Diff<'a> list) (source : 'a list) : ('a list) option =
         match ps, xs with
         | Ins(x) :: ds, ys -> 
             work ds ys fk (fun ac ->
-            sk (x :: ac))
+            insertCps x ac fk sk)
 
-        | Del(x) :: ds, y :: ys -> 
-            if x = y then 
-                work ds ys fk sk
-            else
-                fk ()
-        | Cpy(x) :: ds, y :: ys ->
-            work ds ys fk (fun ac ->
-                sk (y :: ac))
+        | Del(x) :: ds, ys -> 
+            deleteCps x ys fk (fun ac ->
+            work ds ac fk sk)
+
+        | Cpy(x) :: ds, ys ->
+            deleteCps x ys fk (fun ac1 ->
+            work ds ac1 fk (fun ac2 -> 
+            insertCps x ac2 fk sk))
+
         | [], [] -> sk []
-        | _, [] -> fk () 
-        | [], _ -> fk ()
 
+        | [], _ -> fk ()
     work patchSteps source (fun _ -> None) (fun xs -> Some xs)
+
 
 let demo01 () = 
     patch [Cpy(1);Cpy(2);Ins(3);Cpy(4)] [1;2;4]
