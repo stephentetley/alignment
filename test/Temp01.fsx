@@ -1,7 +1,5 @@
 ﻿#r "netstandard"
 
-/// Oleg Kiselyov "The simplest way to turn a tree or any other enumerable data structure into a stream is through a zipper."
-
 
 type Tree23 = 
     | Leaf

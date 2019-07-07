@@ -12,6 +12,8 @@
     <None Include="TestDiff02.fsx" />
     <None Include="Temp01.fsx" />
     <None Include="Zipper1.fsx" />
+    <None Include="PatchingLists1.fsx" />
+    <None Include="PatchingTrees1.fsx" />
   </ItemGroup>
 
 </Project>
