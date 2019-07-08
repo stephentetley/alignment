@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="SLAlignment\ListDiff.fs" />
+    <Compile Include="SLAlignment\TreeDiff.fs" />
     <Compile Include="SLAlignment\Common.fs" />
     <Compile Include="SLAlignment\Levenshtein.fs" />
     <Compile Include="SLAlignment\OrderedList.fs" />
