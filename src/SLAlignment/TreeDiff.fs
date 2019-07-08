@@ -13,18 +13,7 @@ namespace SLAlignment
 
 module TreeDiff = 
 
-    type Tree<'a> = 
-        | Node of label : 'a * kids : Tree<'a> list
-
-        member x.Label 
-            with get () : 'a = 
-                match x with | Node(x,_) -> x
-
-        member x.Kids 
-            with get () : Tree<'a> list = 
-                match x with | Node(_, kids) -> kids
-
-    type Forest<'a> = Tree<'a> list
+    open SLAlignment.RoseTree
 
     type Diff<'a> = 
         | Ins of 'a * arity : int

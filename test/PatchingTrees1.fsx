@@ -3,7 +3,9 @@
 // From "Type safe diff for families of datatypes"
 // Eelco Lempsink, Sean Leather, Andres Löh
 
+#load "..\src\SLAlignment\RoseTree.fs"
 #load "..\src\SLAlignment\TreeDiff.fs"
+open SLAlignment.RoseTree
 open SLAlignment.TreeDiff
 
 

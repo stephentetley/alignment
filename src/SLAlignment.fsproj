@@ -11,7 +11,9 @@
     <Compile Include="SLAlignment\Old\AlignedList.fs" />
     <Compile Include="SLAlignment\Old\Extra\ExcelProviderHelper.fs" />
     <Compile Include="SLAlignment\ListDiff.fs" />
+    <Compile Include="SLAlignment\RoseTree.fs" />
     <Compile Include="SLAlignment\TreeDiff.fs" />
+    <Compile Include="SLAlignment\XCC.fs" />
   </ItemGroup>
 
 </Project>

@@ -14,6 +14,7 @@
     <None Include="Zipper1.fsx" />
     <None Include="PatchingLists1.fsx" />
     <None Include="PatchingTrees1.fsx" />
+    <None Include="TestXCC.fsx" />
   </ItemGroup>
 
 </Project>

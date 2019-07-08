@@ -13,6 +13,11 @@ namespace SLAlignment
 
 module ListDiff =  
 
+    /// Note 
+    /// Investigate the Myers algorithm as (unlike Levenshtein) it generates an edit 
+    /// script rather than the edit distance.
+    
+
     type Diff<'a> = 
         | Ins of 'a
         | Del of 'a
