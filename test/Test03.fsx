@@ -4,8 +4,8 @@
 #r "netstandard"
 
 
-#load "..\src\SLAlignment\AlignedList.fs"
-open SLAlignment.AlignedList
+#load "..\src\SLAlignment\Old\AlignedList.fs"
+open SLAlignment.Old.AlignedList
 
 
 type Compass = NORTH | SOUTH | EAST | WEST

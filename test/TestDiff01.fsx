@@ -15,10 +15,10 @@ open FSharp.Interop.Excel
 
 open System.Text.RegularExpressions
 
-#load "..\src\SLAlignment\Common.fs"
-#load "..\src\SLAlignment\OrderedList.fs"
-open SLAlignment.Common
-open SLAlignment.OrderedList
+#load "..\src\SLAlignment\Old\Common.fs"
+#load "..\src\SLAlignment\Old\OrderedList.fs"
+open SLAlignment.Old.Common
+open SLAlignment.Old.OrderedList
 
 
 type UploadTable = 

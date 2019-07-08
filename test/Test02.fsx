@@ -3,8 +3,8 @@
 
 #r "netstandard"
 
-#load "..\src\SLAlignment\OrderedList.fs"
-open SLAlignment.OrderedList
+#load "..\src\SLAlignment\Old\OrderedList.fs"
+open SLAlignment.Old.OrderedList
 
 
         

@@ -6,8 +6,8 @@
 open System.Text.RegularExpressions
 
 
-#load "..\src\SLAlignment\Levenshtein.fs"
-open SLAlignment.Levenshtein
+#load "..\src\SLAlignment\Old\Levenshtein.fs"
+open SLAlignment.Old.Levenshtein
 
 
 

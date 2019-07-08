@@ -17,10 +17,10 @@ open FSharp.Interop.Excel
 open System.Text.RegularExpressions
 
 
-#load "..\src\SLAlignment\AlignedList.fs"
-#load "..\src\SLAlignment\Extra\ExcelProviderHelper.fs"
-open SLAlignment.AlignedList
-open SLAlignment.Extra.ExcelProviderHelper
+#load "..\src\SLAlignment\Old\AlignedList.fs"
+#load "..\src\SLAlignment\Old\Extra\ExcelProviderHelper.fs"
+open SLAlignment.Old.AlignedList
+open SLAlignment.Old.Extra.ExcelProviderHelper
 
 type WorkTable = 
     ExcelFile< @"G:\work\Projects\events2\EDM2 Site-List SK.xlsx",

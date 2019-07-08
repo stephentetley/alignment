@@ -5,13 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="SLAlignment\Old\Common.fs" />
+    <Compile Include="SLAlignment\Old\Levenshtein.fs" />
+    <Compile Include="SLAlignment\Old\OrderedList.fs" />
+    <Compile Include="SLAlignment\Old\AlignedList.fs" />
+    <Compile Include="SLAlignment\Old\Extra\ExcelProviderHelper.fs" />
     <Compile Include="SLAlignment\ListDiff.fs" />
     <Compile Include="SLAlignment\TreeDiff.fs" />
-    <Compile Include="SLAlignment\Common.fs" />
-    <Compile Include="SLAlignment\Levenshtein.fs" />
-    <Compile Include="SLAlignment\OrderedList.fs" />
-    <Compile Include="SLAlignment\AlignedList.fs" />
-    <Compile Include="SLAlignment\Extra\ExcelProviderHelper.fs" />
   </ItemGroup>
 
 </Project>
