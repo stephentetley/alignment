@@ -16,7 +16,15 @@ module TreeDiff =
     type Tree<'a> = 
         | Node of label : 'a * kids : Tree<'a> list
 
+        member x.Label 
+            with get () : 'a = 
+                match x with | Node(x,_) -> x
 
+        member x.Kids 
+            with get () : Tree<'a> list = 
+                match x with | Node(_, kids) -> kids
+
+    type Forest<'a> = Tree<'a> list
 
     type Diff<'a> = 
         | Ins of 'a * arity : int
@@ -73,29 +81,33 @@ module TreeDiff =
     let inline private choose (dx : Diff<'a> list) (dy : Diff<'a> list) : Diff<'a> list = 
         if cost dx <= cost dy then dx else dy
 
-    let diff (list1 : Tree<'a> list) (list2 : Tree<'a> list) : Diff<'a> list = 
-        let rec work ks ls cont = 
+    let forestDiff (list1 : Forest<'a>) (list2 : Forest<'a>) : Diff<'a> list = 
+        let rec diff ks ls cont = 
             match ks,ls with
             | [], [] -> cont []
             | [], (Node(y,ys) :: yss) -> 
-                work [] (ys @ yss) (fun ac ->
+                diff [] (ys @ yss) (fun ac ->
                 cont (Ins(y, ys.Length) :: ac))
 
             | (Node(x,xs) :: xss), [] -> 
-                work (xs @xss) [] (fun ac ->
+                diff (xs @xss) [] (fun ac ->
                 cont (Del(x, xs.Length) :: ac))
 
             | (Node(x,xs) :: xss), (Node(y,ys) :: yss) ->
                 if x = y && xs.Length = ys.Length then best3 x xs xss y ys yss cont else best2 x xs xss y ys yss cont
 
         and best2 x xs xss y ys yss cont =
-            work (xs @ xss) (Node(y,ys) :: yss) (fun acD ->
-            work (Node(x,xs) :: xss) (ys @ yss) (fun acI -> 
+            diff (xs @ xss) (Node(y,ys) :: yss) (fun acD ->
+            diff (Node(x,xs) :: xss) (ys @ yss) (fun acI -> 
             cont (choose (Del(x, xs.Length) :: acD) (Ins(y, ys.Length) :: acI))))
 
         and best3 x xs xss y ys yss cont =
-            work xs ys (fun acC ->
+            diff (xs @ xss) (ys @ yss) (fun acC ->
             best2 x xs xss y ys yss (fun acB2 ->
             cont (choose (Cpy(x, xs.Length) :: acC) acB2)))
 
-        work list1 list2 (fun xs -> xs)
+        diff list1 list2 (fun xs -> xs)
+
+
+    let treeDiff (tree1 : Tree<'a>) (tree2 : Tree<'a>) : Diff<'a> list = 
+        forestDiff [tree1] [tree2]
