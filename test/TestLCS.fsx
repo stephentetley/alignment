@@ -16,11 +16,21 @@ let test0a () =
 
 
 let test01 () = 
-    greedyLCS (Seq.toArray pathA) (Seq.toArray pathB)
+    greedySES (Seq.toArray pathA) (Seq.toArray pathB)
 
 
+let pathAi = [| 1; 2; 3; 1; 2; 2; 1 |]
+let pathBi = [| 3; 2; 1; 2; 1; 3 |]
+
+let test02 () = 
+    greedySES pathAi pathBi
+
+    
+let test03 () = 
+    greedySES (Seq.toArray "ABC") (Seq.toArray "C")
 
 
+let dummy () = [for x in 0 .. 2 do yield x]
 
 
 
