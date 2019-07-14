@@ -13,6 +13,7 @@
     <Compile Include="SLAlignment\ListDiff.fs" />
     <Compile Include="SLAlignment\RoseTree.fs" />
     <Compile Include="SLAlignment\TreeDiff.fs" />
+    <Compile Include="SLAlignment\LCS.fs" />
     <Compile Include="SLAlignment\XCC.fs" />
   </ItemGroup>
 

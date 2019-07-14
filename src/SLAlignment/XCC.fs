@@ -18,7 +18,7 @@ module XCC =
         | Node2 of label : 'a * path : PathId * kids : Tree2<'a> list
 
 
-    let private correctRoot (source : Tree2<'a>) : Tree2<'b> = 
+    let private correctRoot (source : Tree2<'a>) : Tree2<'a> = 
         match source with 
         | Node2(a, _, kids) -> Node2(a, "/", kids)
 
