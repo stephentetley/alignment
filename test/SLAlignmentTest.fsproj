@@ -15,6 +15,7 @@
     <None Include="PatchingLists1.fsx" />
     <None Include="PatchingTrees1.fsx" />
     <None Include="TestLCS.fsx" />
+    <None Include="TestLCS2.fsx" />
     <None Include="TestXCC.fsx" />
   </ItemGroup>
 

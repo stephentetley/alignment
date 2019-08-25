@@ -15,6 +15,7 @@
     <Compile Include="SLAlignment\TreeDiff.fs" />
     <Compile Include="SLAlignment\LCS.fs" />
     <Compile Include="SLAlignment\XCC.fs" />
+    <Compile Include="SLAlignment\LCS2.fs" />
   </ItemGroup>
 
 </Project>
