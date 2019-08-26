@@ -7,7 +7,9 @@ open SLAlignment.LCS3
 
 
 let demo01 () = 
-    printfn "TODO"
+    let p1 = "abcabba"
+    let p2 = "cbabac"
+    compute (Seq.toArray p1) (Seq.toArray p2)
 
 
 

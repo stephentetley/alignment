@@ -3,7 +3,9 @@
 
 // Acknowledgment
 // ==============
-// This is an attempt at implementing the XCC diff algorithms
+// This is direct translation to F# of code in Lorenzo Schori's Javascript code, 
+// see github.com/znerol/node-delta 
+
 
 namespace SLAlignment
 
@@ -194,3 +196,48 @@ module LCS3 =
                 outerLoop (d+1) fk sk
 
         outerLoop 0 (fun () -> None) (fun x -> Some x)
+
+    // Initally just return the ses length...
+    let compute (arrA : 'a []) (arrB : 'a []) : int = 
+
+        let rec work (limit : Limit) cont = 
+            if limit.N <= 0 && limit.M <= 0 then
+                cont 0
+            else if limit.N > 0 && limit.M = 0 then
+                cont (limit.N - 1)
+            else if limit.N = 0 && limit.M > 0 then
+                cont (limit.M - 1)
+            else 
+                // Find the middle snake and store the result in midleft and midright
+                match middleSnake arrA arrB limit with
+                | None -> 
+                    // Failure?
+                    cont -1
+                | Some (d, midleft, midright) -> 
+                    if d = 0 then
+                        // No single insert / delete operation was identified by the middle
+                        // snake algorithm, this means that all the symbols between left and
+                        // right are equal -> one straight diagonal on k=0
+                        cont 0
+                    else if d = 1 then
+                        // Middle-snake algorithm identified exactly one operation. (TODO >>>>>) Report
+                        // the involved snake(s) to the caller.
+                        cont 1
+                    else
+                        // Recurse if the middle-snake algorithm encountered more than one
+                        // operation.
+                        if not (limit.Left = midright) then
+                            let limit1 = new Limit(limit.Left, midleft)
+                            work limit1 cont
+                        else if not (midleft = midright) then
+                            cont d
+                        else if not (midright = limit.Right) then
+                            let limit1 = new Limit(midright, limit.Right)
+                            work limit1 cont
+                        else 
+                            // Error
+                            cont -1
+
+        let limit : Limit = defaultLimit arrA arrB
+
+        work limit (fun x -> x)
