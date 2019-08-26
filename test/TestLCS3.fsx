@@ -19,10 +19,11 @@ let earlyReturn (test : int64 -> bool) =
 let demo01 () = 
     let p1 = "abcabba"
     let p2 = "cbabac"
-    compute (Seq.toArray p1) (Seq.toArray p2)
+    try 
+        compute (Seq.toArray p1) (Seq.toArray p2)
+    with
+    | excn -> printfn "exception: %s" excn.Message; -1
 
 
 
 
-
-        

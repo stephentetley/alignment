@@ -12,6 +12,8 @@ namespace SLAlignment
 
 module LCS3 = 
 
+    open System
+
     type KPoint = 
         { X : int
           K : int
@@ -73,9 +75,8 @@ module LCS3 =
         // The original code uses an 'array' with negative and positive indices
         let shift ix = ix + limit.DMax
 
-        // printfn "V access - k-1=%i; k+1=%i; V.length=%i; limit.dmax=%i; " (k-1) (k+1) (bigV.Length) (limit.DMax)
-        printfn "nextSnakeHeadForward" 
-
+        printfn "V access - k-1=%i; k+1=%i; V.length=%i; limit.dmax=%i; " (k-1) (k+1) (bigV.Length) (limit.DMax)
+               
         // Determine the preceeding snake head. 
         // Pick the one whose furthest reaching x value is greatest.
         let (x0, k0) : int * int = 
@@ -86,24 +87,29 @@ module LCS3 =
                 (bigV.[shift k0], k0)
             else
                 // Furthest reaching snake is left (k-1), move right
-                printfn "move down"
+                printfn "move right"
                 let k0 = k-1 
-                (bigV.[shift k0] - 1, k0)
+                (bigV.[shift k0] + 1, k0)
         
         // Follow the diagonal as long as there are common values in a and b.
+        printfn "Follow the diagonal (forward)"
         let bx = limit.Left.X
         let by = bx - (limit.Left.K + k)
         let n = min limit.N (limit.M + k)
         let mutable x : int = x0
+        printfn "before while loop x=%i, bx=%i, by=%i, bx+x=%i, by+x=%i" x bx by (bx+x) (by+x)
         while x < n && arrA.[bx + x] = arrB.[by + x] do
+            printfn "while loop... x=%i" x
             x <- x + 1
         
+        printfn "After follow the diagonal (forward), x=%i" x
         // Store x value of snake head after traversing the diagonal in forward
         // direction.
         let snakeHead = { X = x; K = k}.Translate(limit.Left)
 
         // Memoize furthest reaching x for k
-        bigV.[k] <- x
+        printfn "(forward) update bigV.{%i} <- %i" k x
+        bigV.[shift k] <- x
         (k0, snakeHead)
 
     let nextSnakeHeadBackward (arrA : 'a []) (arrB : 'a []) 
@@ -140,7 +146,8 @@ module LCS3 =
             x <- x - 1
         
         // Memoize furthest reaching x for k
-        bigV.[k] <- x
+        printfn "(backward) update bigV.{%i} <- %i" k x
+        bigV.[shift k] <- x
         (k0, snakeHead)
 
 
@@ -155,7 +162,7 @@ module LCS3 =
         let checkBwSnake : bool = (delta % 2) = 0
         let size = limit.DMax * 2 + 1
         let bigVf : int [] = Array.zeroCreate size
-        let bigVb : int [] = Array.zeroCreate size
+        let bigVb : int [] = Array.init size (fun _ -> Int32.MinValue)
 
         printfn "middleSnake limit=%O" limit
 
@@ -168,16 +175,21 @@ module LCS3 =
                 fk ()
         
         and forwardLoop k d fk sk = 
+            printfn "forward snake (inner loop), d=%i, k=%i" d k
             if k <= d then 
                 let (k0, righthead) = nextSnakeHeadForward arrA arrB k (-d) d limit bigVf
-
+                printfn "k0 answer (forward) = %i" k0
                 // check for overlap
                 if not checkBwSnake && k >= -d - 1 + delta && k <= d - 1 + delta then
-                    if bigVf.[k] >= bigVb.[k] then
+                    // The Javascript implementation relies on Vb being a sparse 
+                    // array at this point
+
+                    if bigVb.[shift k] > Int32.MinValue && bigVf.[shift k] >= bigVb.[shift k] then
                         // righthead already contains the right stuff, now set
                         // the lefthead to the values of the last k-line.
-                        let lefthead = { X = bigVf.[k0]; K = k0}.Translate(limit.Left)
+                        let lefthead = { X = bigVf.[shift k0]; K = k0}.Translate(limit.Left)
                         // CPS-return the number of edit script operations and left and right heads
+                        printfn "forward - success"
                         sk (2 * d - 1, lefthead, righthead)
                     else 
                         forwardLoop (k+2) d fk sk
@@ -188,16 +200,18 @@ module LCS3 =
 
 
         and backwardLoop k d fk sk = 
+            printfn "backward snake (inner loop), d=%i, k=%i" d k
             if k <= d + delta then
                 let (k0, lefthead) = nextSnakeHeadBackward arrA arrB k (-d+delta) (d+delta) limit bigVb
-               
+                printfn "k0 answer (backward) = %i" k0
                 // check for overlap
                 if checkBwSnake && k >= -d && k <= d then
-                   if bigVf.[k] >= bigVb.[k] then
+                   if bigVb.[shift k] > Int32.MinValue && bigVf.[shift k] >= bigVb.[shift k] then
                         // lefthead already contains the right stuff, now set
                         // the righthead to the values of the last k-line.
-                        let righthead = { X = bigVb.[k0]; K = k0}.Translate(limit.Left);
+                        let righthead = { X = bigVb.[shift k0]; K = k0}.Translate(limit.Left);
                         // return the number of edit script operations
+                        printfn "backward - success"
                         sk (2 * d, lefthead, righthead)
                    else
                         backwardLoop (k+2) d fk sk
