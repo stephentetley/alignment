@@ -6,13 +6,6 @@ open System.Text
 open SLAlignment.LCS3
 
 
-let demo01 () = 
-    let p1 = "abcabba"
-    let p2 = "cbabac"
-    compute (Seq.toArray p1) (Seq.toArray p2)
-
-
-
 let earlyReturn (test : int64 -> bool) = 
     let rec loop d failk successk = 
         if test d then 
@@ -22,6 +15,14 @@ let earlyReturn (test : int64 -> bool) =
         else
             loop (d+1L) failk successk
     loop 0L  (fun _ -> None) (fun x -> Some x)
+
+let demo01 () = 
+    let p1 = "abcabba"
+    let p2 = "cbabac"
+    compute (Seq.toArray p1) (Seq.toArray p2)
+
+
+
 
 
         

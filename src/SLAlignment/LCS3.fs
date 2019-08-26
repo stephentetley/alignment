@@ -55,6 +55,9 @@ module LCS3 =
 
         member v.DMax : int = v.N + v.M
 
+        override v.ToString() = 
+            sprintf "{Left = %O; Right=%O; Delta=%i; N=%i; M=%i; DMax=%i}" v.Left v.Right v.Delta v.N v.M v.DMax
+
     let defaultLimit (arrA : 'a []) (arrB : 'b []) : Limit = 
         let kl : KPoint = { X = 0; K = 0}
         let kr : KPoint = { X = arrA.Length; K = arrA.Length - arrB.Length}
@@ -70,15 +73,20 @@ module LCS3 =
         // The original code uses an 'array' with negative and positive indices
         let shift ix = ix + limit.DMax
 
+        // printfn "V access - k-1=%i; k+1=%i; V.length=%i; limit.dmax=%i; " (k-1) (k+1) (bigV.Length) (limit.DMax)
+        printfn "nextSnakeHeadForward" 
+
         // Determine the preceeding snake head. 
         // Pick the one whose furthest reaching x value is greatest.
         let (x0, k0) : int * int = 
-            if k = kmin || (k <> kmax && bigV.[shift (k-1)] < bigV.[ shift (k+1)]) then
+            if k = kmin || (k <> kmax && bigV.[shift (k-1)] < bigV.[shift (k+1)]) then
                 // Furthest reaching snake is above (k+1), move down
+                printfn "move down"
                 let k0 = k+1 
                 (bigV.[shift k0], k0)
             else
                 // Furthest reaching snake is left (k-1), move right
+                printfn "move down"
                 let k0 = k-1 
                 (bigV.[shift k0] - 1, k0)
         
@@ -103,10 +111,12 @@ module LCS3 =
         // The original code uses an 'array' with negative and positive indices
         let shift ix = ix + limit.DMax
         
+        printfn "nextSnakeHeadBackward" 
+
         // Determine the preceeding snake head. 
         // Pick the one whose furthest reaching x value is greatest.
         let (x0, k0) : int * int = 
-            if k = kmin || (k <> kmax && bigV.[shift (k-1)] < bigV.[ shift (k+1)]) then
+            if k = kmin || (k <> kmax && bigV.[shift (k-1)] < bigV.[shift (k+1)]) then
                 // Furthest reaching snake is underneath (k-1), move up.
                 let k0 = k-1 
                 (bigV.[shift k0], k0)
@@ -136,8 +146,7 @@ module LCS3 =
 
 
 
-    let middleSnake (arrA : 'a []) (arrB : 'a []) 
-                     (limit : Limit) = 
+    let middleSnake (arrA : 'a []) (arrB : 'a []) (limit : Limit) : (int * KPoint * KPoint) option = 
         // The original code uses an 'array' with negative and positive indices
         let shift ix = ix + limit.DMax
 
@@ -148,7 +157,9 @@ module LCS3 =
         let bigVf : int [] = Array.zeroCreate size
         let bigVb : int [] = Array.zeroCreate size
 
-        bigVb.[delta-1] <- limit.N
+        printfn "middleSnake limit=%O" limit
+
+        bigVb.[shift (delta-1)] <- limit.N
 
         let rec outerLoop d fk sk = 
             if d <= dmax then
@@ -197,6 +208,8 @@ module LCS3 =
 
         outerLoop 0 (fun () -> None) (fun x -> Some x)
 
+
+
     // Initally just return the ses length...
     let compute (arrA : 'a []) (arrB : 'a []) : int = 
 
@@ -204,16 +217,20 @@ module LCS3 =
             if limit.N <= 0 && limit.M <= 0 then
                 cont 0
             else if limit.N > 0 && limit.M = 0 then
+                printfn "limit.M = 0"
                 cont (limit.N - 1)
             else if limit.N = 0 && limit.M > 0 then
+                printfn "limit.N = 0"
                 cont (limit.M - 1)
             else 
                 // Find the middle snake and store the result in midleft and midright
                 match middleSnake arrA arrB limit with
                 | None -> 
                     // Failure?
+                    printfn "No middleSnake"
                     cont -1
                 | Some (d, midleft, midright) -> 
+                    printfn "middleSnake with d=%i" d
                     if d = 0 then
                         // No single insert / delete operation was identified by the middle
                         // snake algorithm, this means that all the symbols between left and
@@ -235,8 +252,8 @@ module LCS3 =
                             let limit1 = new Limit(midright, limit.Right)
                             work limit1 cont
                         else 
-                            // Error
-                            cont -1
+                            // if midleft = midright return d (I think)
+                            cont d
 
         let limit : Limit = defaultLimit arrA arrB
 
