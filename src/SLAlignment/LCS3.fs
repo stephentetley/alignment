@@ -97,7 +97,7 @@ module LCS3 =
         let by = bx - (limit.Left.K + k)
         let n = min limit.N (limit.M + k)
         let mutable x : int = x0
-        printfn "before while loop x=%i, bx=%i, by=%i, bx+x=%i, by+x=%i" x bx by (bx+x) (by+x)
+        printfn "(forward) before while loop x=%i, bx=%i, by=%i, bx+x=%i, by+x=%i" x bx by (bx+x) (by+x)
         while x < n && arrA.[bx + x] = arrB.[by + x] do
             printfn "while loop... x=%i" x
             x <- x + 1
@@ -121,14 +121,17 @@ module LCS3 =
 
         // Determine the preceeding snake head. 
         // Pick the one whose furthest reaching x value is greatest.
+        printfn "backward, V[k-1]=%i, V[k+1]=%i" (bigV.[shift (k-1)]) (bigV.[shift (k+1)])
         let (x0, k0) : int * int = 
-            if k = kmin || (k <> kmax && bigV.[shift (k-1)] < bigV.[shift (k+1)]) then
+            if k = kmax || (k <> kmin && bigV.[shift (k-1)] > Int32.MinValue && bigV.[shift (k-1)] < bigV.[shift (k+1)]) then
                 // Furthest reaching snake is underneath (k-1), move up.
+                printfn "move up"
                 let k0 = k-1 
                 (bigV.[shift k0], k0)
             else
                 // ...
-                let k0 = k-1 
+                printfn "move right"
+                let k0 = k+1 
                 (bigV.[shift k0] - 1, k0)
         
         let mutable x : int = x0
@@ -141,7 +144,7 @@ module LCS3 =
         let bx = limit.Left.X - 1
         let by = bx - (limit.Left.K + k)
         let n = max k 0
-        
+        printfn "(backward) before while loop x=%i, n=%i, bx=%i, by=%i, bx+x=%i, by+x=%i" x n bx by (bx+x) (by+x)
         while x > n && arrA.[bx + x] = arrB.[by + x] do
             x <- x - 1
         
