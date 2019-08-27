@@ -231,14 +231,17 @@ module LCS3 =
     let compute (arrA : 'a []) (arrB : 'a []) : int = 
 
         let rec work (limit : Limit) cont = 
+            printfn "limit=%O" limit
             if limit.N <= 0 && limit.M <= 0 then
                 cont 0
             else if limit.N > 0 && limit.M = 0 then
-                printfn "limit.M = 0"
-                cont (limit.N - 1)
+                printfn "limit.N > 0 && limit.M = 0"
+                printfn "returning %i" limit.N
+                cont limit.N
             else if limit.N = 0 && limit.M > 0 then
-                printfn "limit.N = 0"
-                cont (limit.M - 1)
+                printfn "limit.N = 0 && limit.M > 0"
+                printfn "returning %i" limit.M
+                cont limit.M
             else 
                 // Find the middle snake and store the result in midleft and midright
                 match middleSnake arrA arrB limit with
@@ -258,14 +261,19 @@ module LCS3 =
                         // the involved snake(s) to the caller.
                         cont 1
                     else
+                        printfn "compute recurse..."
                         // Recurse if the middle-snake algorithm encountered more than one
                         // operation.
-                        if not (limit.Left = midright) then
+
+                        // TODO - the Javascript here does not translate to multiple else cases...
+                        if not (limit.Left = midleft) then
+                            printfn "not (limit.Left = midleft)"
                             let limit1 = new Limit(limit.Left, midleft)
                             work limit1 cont
                         else if not (midleft = midright) then
                             cont d
                         else if not (midright = limit.Right) then
+                            printfn "not (midright = limit.Right)"
                             let limit1 = new Limit(midright, limit.Right)
                             work limit1 cont
                         else 
