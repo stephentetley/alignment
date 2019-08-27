@@ -251,34 +251,7 @@ module LCS3 =
                     cont -1
                 | Some (d, midleft, midright) -> 
                     printfn "middleSnake with d=%i" d
-                    if d = 0 then
-                        // No single insert / delete operation was identified by the middle
-                        // snake algorithm, this means that all the symbols between left and
-                        // right are equal -> one straight diagonal on k=0
-                        cont 0
-                    else if d = 1 then
-                        // Middle-snake algorithm identified exactly one operation. (TODO >>>>>) Report
-                        // the involved snake(s) to the caller.
-                        cont 1
-                    else
-                        printfn "compute recurse..."
-                        // Recurse if the middle-snake algorithm encountered more than one
-                        // operation.
-
-                        // TODO - the Javascript here does not translate to multiple else cases...
-                        if not (limit.Left = midleft) then
-                            printfn "not (limit.Left = midleft)"
-                            let limit1 = new Limit(limit.Left, midleft)
-                            work limit1 cont
-                        else if not (midleft = midright) then
-                            cont d
-                        else if not (midright = limit.Right) then
-                            printfn "not (midright = limit.Right)"
-                            let limit1 = new Limit(midright, limit.Right)
-                            work limit1 cont
-                        else 
-                            // if midleft = midright return d (I think)
-                            cont d
+                    cont d
 
         let limit : Limit = defaultLimit arrA arrB
 
