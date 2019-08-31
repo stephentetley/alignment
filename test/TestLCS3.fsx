@@ -20,16 +20,16 @@ let demo01 () =
     let p1 = "abcabba"
     let p2 = "cbabac"
     try 
-        compute (Seq.toArray p1) (Seq.toArray p2)
+        lcs (Seq.toArray p1) (Seq.toArray p2)
     with
-    | excn -> printfn "exception: %s" excn.Message; -1
+    | excn -> printfn "exception: %s" excn.Message; []
 
 
 let demo02 () = 
     let p1 = "inclined"
     let p2 = "science"
     try 
-        compute (Seq.toArray p1) (Seq.toArray p2)
+        lcs (Seq.toArray p1) (Seq.toArray p2)
     with
-    | excn -> printfn "exception: %s" excn.Message; -1
+    | excn -> printfn "exception: %s" excn.Message; []
 

@@ -18,6 +18,10 @@ module LCS3 =
         { X : int
           K : int
         }
+        
+        member v.Cartesian
+            with get () : int * int = (v.X, v.X - v.K)
+            
 
         member v.Translate(other : KPoint) : KPoint = 
             { X = v.X + other.X
@@ -224,6 +228,30 @@ module LCS3 =
                 outerLoop (d+1) fk sk
 
         outerLoop 0 (fun () -> None) (fun x -> Some x)
+
+    let lcs (arrA : 'a []) (arrB : 'a []) : 'a list = 
+        
+        let rec work a1 n b1 m cont = 
+            if n > 0 && m > 0 then
+                let limit = defaultLimit a1 b1
+                match middleSnake a1 b1 limit with
+                | None -> 
+                    cont []
+                | Some (d, midleft, midright) -> 
+                    let (x,y) = midleft.Cartesian
+                    let (u,v) = midright.Cartesian
+                    if d > 1 then
+                        work a1.[0 .. x-1] x b1.[0 .. y-1] y (fun xs ->
+                        let ys = a1.[x .. u-1] |> Array.toList
+                        work a1.[u .. n-1] (n-u) b1.[v .. m-1] (m-v) (fun zs ->
+                        cont (xs @ ys @ zs)))
+                    else if m > n then
+                        cont (a1.[0 .. n-1] |> Array.toList)
+                    else 
+                        cont (b1.[0 .. m-1] |> Array.toList)
+            else
+                cont []
+        work arrA (arrA.Length) arrB (arrB.Length)  (fun x -> x)
 
 
 
