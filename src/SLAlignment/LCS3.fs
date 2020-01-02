@@ -19,8 +19,8 @@ module LCS3 =
           K : int
         }
         
-        member v.Cartesian
-            with get () : int * int = (v.X, v.X - v.K)
+        member v.Y
+            with get () : int = v.X - v.K
             
 
         member v.Translate (other : KPoint) : KPoint = 
@@ -78,11 +78,16 @@ module LCS3 =
             sprintf "{Left = %O; Right=%O; Delta=%i; N=%i; M=%i; DMax=%i}" v.Left v.Right v.Delta v.N v.M v.DMax
 
     let defaultLimit (arrA : 'a []) (arrB : 'b []) : Limit = 
-        let kl : KPoint = { X = 0; K = 0}
-        let kr : KPoint = { X = arrA.Length; K = arrA.Length - arrB.Length}
-        new Limit(kl, kr)
+        let kleft : KPoint = { X = 0; K = 0}
+        let kright : KPoint = { X = arrA.Length; K = arrA.Length - arrB.Length}
+        new Limit(kleft, kright)
 
 
+    type Snake = 
+        { Start: KPoint
+          End: KPoint
+          D: int
+        }
     
 
     // We use (limited) mutation as we don't want to needlessly lose speed compared to the original
@@ -173,7 +178,8 @@ module LCS3 =
 
 
 
-    let middleSnake (arrA : 'a []) (arrB : 'a []) (limit : Limit) : (int * KPoint * KPoint) option = 
+    let middleSnake (arrA : 'a []) (arrB : 'a [])  : Snake option = 
+        let limit = defaultLimit arrA arrB
         // The original code uses an 'array' with negative and positive indices
         let shift ix = ix + limit.DMax
 
@@ -210,7 +216,7 @@ module LCS3 =
                         let lefthead = { X = bigVf.[shift k0]; K = k0}.Translate(limit.Left)
                         // CPS-return the number of edit script operations and left and right heads
                         // printfn "forward - success"
-                        sk (2 * d - 1, lefthead, righthead)
+                        sk { D = 2 * d - 1; Start = lefthead; End = righthead }
                     else 
                         forwardLoop (k+2) d fk sk
                 else 
@@ -232,7 +238,7 @@ module LCS3 =
                         let righthead = { X = bigVb.[shift k0]; K = k0}.Translate(limit.Left);
                         // return the number of edit script operations
                         // printfn "backward - success"
-                        sk (2 * d, lefthead, righthead)
+                        sk { D = 2 * d; Start = lefthead; End = righthead }
                    else
                         backwardLoop (k+2) d fk sk
                 else
@@ -242,68 +248,34 @@ module LCS3 =
 
         outerLoop 0 (fun () -> None) (fun x -> Some x)
 
+    let private slice (start: int) (e: int) (arr: 'a[]) : 'a[] = 
+        if e < start then [| |] else arr.[start..e]
+
+    let private sliceRight (start: int) (arr: 'a[]) : 'a[] = arr.[start..]
 
 
-    let lcs (arrA : 'a []) (arrB : 'a []) : 'a list = 
-        
-        let rec work token a1 n b1 m cont = 
-            printfn "(%s) A='%A'; b='%A'" token a1 b1
-            if n > 0 && m > 0 then
-                let limit = defaultLimit a1 b1
-                match middleSnake a1 b1 limit with
-                | None -> 
-                    cont []
-                | Some (d, midleft, midright) ->                     
-                    let (x,y) = midleft.Cartesian
-                    let (u,v) = midright.Cartesian
-                    printfn "(%s) d=%i;  (%i,%i) -> (%i,%i)" token d x y u v
-                    if d > 1 then
-                        work "left" a1.[0 .. x-1] x b1.[0 .. y-1] y (fun xs ->
-                        let ys = 
-                            match diagonalRange midleft midright with
-                            | Some(ix1,ix2) -> 
-                                printfn "(%s) a1.[%i..%i]" token ix1 ix2
-                                a1.[ix1 .. ix2] |> Array.toList
-                            | None -> []
-                        printfn "(%s) ys=%O" token ys
-                        work "right" a1.[u-1 .. n-1] (n-u) b1.[v-1 .. m-1] (m-v) (fun zs ->
-                        cont (xs @ ys @ zs)))
-                    else if m > n then
-                        cont [] // (a1.[0 .. n] |> Array.toList)
-                    else 
-                        cont [] // (b1.[0 .. m] |> Array.toList)
+    let lcs (arrA : 'a[]) (arrB : 'a[]) : int * Snake list =         
+        let rec work (a1 : 'a[]) (b1 : 'a[]) (origin: KPoint) (snakes : Snake list) (cont : int -> Snake list -> int * Snake list)  = 
+            let n = a1.Length
+            let m = b1.Length
+            if n <= 0 || m <= 0 then
+                cont 0 snakes
             else
-                cont []
-        work "start" arrA (arrA.Length) arrB (arrB.Length)  (fun x -> x)
-
-
-
-    // Initally just return the ses length...
-    let compute (arrA : 'a []) (arrB : 'a []) : int = 
-
-        let rec work (limit : Limit) cont = 
-            // printfn "limit=%O" limit
-            if limit.N <= 0 && limit.M <= 0 then
-                cont 0
-            else if limit.N > 0 && limit.M = 0 then
-                // printfn "limit.N > 0 && limit.M = 0"
-                // printfn "returning %i" limit.N
-                cont limit.N
-            else if limit.N = 0 && limit.M > 0 then
-                // printfn "limit.N = 0 && limit.M > 0"
-                // printfn "returning %i" limit.M
-                cont limit.M
-            else 
-                // Find the middle snake and store the result in midleft and midright
-                match middleSnake arrA arrB limit with
+                match middleSnake a1 b1 with
                 | None -> 
-                    // Failure?
-                    // printfn "No middleSnake"
-                    cont -1
-                | Some (d, midleft, midright) -> 
-                    printfn "middleSnake with d=%i" d
-                    cont d
+                    cont 0 snakes
+                | Some ms ->   
+                    // printfn "%O" ms
+                    if ms.D <= 1 then
+                        cont ms.D (ms :: snakes)
+                    else
+                        printfn "Left  a1.[0..%i] b1.[0..%i]" (ms.Start.X-1) (ms.Start.Y-1)
+                        work (slice 0 (ms.Start.X - 1) a1) (slice 0 (ms.Start.Y - 1) b1)  origin   snakes (fun _ snakes1 ->
+                        printfn "Right a1.[%i..] b1.[%i..]" (ms.End.X+1) (ms.End.Y+1)
+                        let ms1 = { ms with Start = ms.Start.Translate(origin); End = ms.End.Translate(origin) }
+                        work (sliceRight (ms.End.X+1) a1) (sliceRight (ms.End.Y+1) b1) ms.End (ms1 :: snakes1) (fun _ snakes2 -> 
+                        cont ms.D snakes2))                        
+        work arrA arrB {X = 0; K=0} [] (fun x y -> (x,y))
 
-        let limit : Limit = defaultLimit arrA arrB
 
-        work limit (fun x -> x)
+
